@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OSINT Dashboard</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="/">
+        <img src="/static/favicon.svg" alt="" width="26" height="26">
+        <span>OSINT Dashboard</span>
+      </a>
+      <button id="theme" class="ghost" type="button" aria-label="Toggle light/dark theme">◐</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero" id="hero">
+      <h1>One search, every public source.</h1>
+      <p class="muted">Enter a domain, IP address, email address or username. Lookups run in parallel against
+        DNS, RDAP/WHOIS, certificate transparency, Shodan InternetDB, ipinfo, the Wayback Machine and more.</p>
+    </section>
+
+    <form id="search" class="search" autocomplete="off">
+      <label class="sr-only" for="q">Target</label>
+      <input id="q" name="q" type="text" placeholder="example.com, 8.8.8.8, user@example.com or a username" maxlength="300" required autofocus>
+      <label class="sr-only" for="kind">Type</label>
+      <select id="kind" name="type">
+        <option value="auto">Auto-detect</option>
+        <option value="domain">Domain</option>
+        <option value="ip">IP address</option>
+        <option value="email">Email</option>
+        <option value="username">Username</option>
+      </select>
+      <button id="go" type="submit" class="primary">Investigate</button>
+    </form>
+
+    <div class="chips-row" id="examples">
+      <span class="muted">Try:</span>
+      <button type="button" class="chip" data-q="python.org">python.org</button>
+      <button type="button" class="chip" data-q="1.1.1.1">1.1.1.1</button>
+      <button type="button" class="chip" data-q="octocat">octocat</button>
+      <button type="button" class="chip" data-q="security@github.com">security@github.com</button>
+    </div>
+    <div class="chips-row" id="recent" hidden></div>
+
+    <div id="error" class="alert" role="alert" hidden></div>
+
+    <section id="results" hidden>
+      <div class="target-bar">
+        <div>
+          <div class="target-kind" id="t-kind"></div>
+          <h2 id="t-value"></h2>
+          <div class="muted small" id="t-status"></div>
+        </div>
+        <div class="actions">
+          <button type="button" id="copy-link" class="ghost">Copy link</button>
+          <button type="button" id="export" class="ghost" disabled>Export JSON</button>
+        </div>
+      </div>
+      <div class="progress"><div id="progress-bar"></div></div>
+
+      <div class="tiles" id="tiles"></div>
+
+      <section class="panel">
+        <h3>Findings</h3>
+        <ul id="findings" class="findings"></ul>
+      </section>
+
+      <div class="grid" id="modules"></div>
+    </section>
+  </main>
+
+  <footer class="wrap footer muted small">
+    Passive reconnaissance from public sources. Only the TLS and HTTP header checks connect to the target, with one ordinary request each.
+    Use it on assets you own or are authorised to assess.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,164 @@
+{
+    "target": {
+        "raw": "1.1.1.1",
+        "kind": "ip",
+        "value": "1.1.1.1",
+        "domain": null
+    },
+    "generated_at": "2026-10-23T10:59:15+00:00",
+    "duration_ms": 0,
+    "summary": {
+        "critical": 0,
+        "high": 0,
+        "medium": 1,
+        "low": 0,
+        "info": 0
+    },
+    "findings": [
+        {
+            "severity": "medium",
+            "title": "TFTP exposed to the internet (port 69)",
+            "detail": "This service should normally sit behind a VPN or firewall.",
+            "module": "exposure"
+        }
+    ],
+    "modules": [
+        {
+            "id": "geo",
+            "title": "Location & network (ipinfo)",
+            "status": "ok",
+            "summary": "Cloudflare, Inc. - Brisbane, AU",
+            "data": {
+                "hostname": "one.one.one.one",
+                "organisation": "Cloudflare, Inc.",
+                "asn": "AS13335",
+                "city": "Brisbane",
+                "region": "Queensland",
+                "country": "AU",
+                "coordinates": "-27.4679,153.0281",
+                "timezone": "Australia/Brisbane",
+                "anycast": true
+            },
+            "findings": [],
+            "links": {
+                "ipinfo": "https://ipinfo.io/1.1.1.1"
+            },
+            "duration_ms": 273,
+            "cached": true
+        },
+        {
+            "id": "ip_rdap",
+            "title": "Network owner (RDAP)",
+            "status": "ok",
+            "summary": "APNIC Research and Development (1.1.1.0/24)",
+            "data": {
+                "network_name": "APNIC-LABS",
+                "handle": "1.1.1.0 - 1.1.1.255",
+                "range": "1.1.1.0 - 1.1.1.255",
+                "cidr": [
+                    "1.1.1.0/24"
+                ],
+                "type": "ASSIGNED PORTABLE",
+                "country": "AU",
+                "owner": "APNIC Research and Development",
+                "abuse_contact": "helpdesk@apnic.net",
+                "registered": "2011-08-10",
+                "updated": "2023-04-26",
+                "registry": "apnic.net"
+            },
+            "findings": [],
+            "links": {
+                "RDAP": "https://rdap.org/ip/1.1.1.1"
+            },
+            "duration_ms": 243,
+            "cached": true
+        },
+        {
+            "id": "reverse_dns",
+            "title": "Reverse DNS",
+            "status": "ok",
+            "summary": "one.one.one.one",
+            "data": {
+                "ptr": [
+                    "one.one.one.one"
+                ],
+                "forward_confirmed": {
+                    "one.one.one.one": true
+                }
+            },
+            "findings": [],
+            "links": {},
+            "duration_ms": 11,
+            "cached": true
+        },
+        {
+            "id": "exposure",
+            "title": "Open ports & known CVEs (Shodan InternetDB)",
+            "status": "ok",
+            "summary": "13 open port(s)",
+            "data": {
+                "ports": [
+                    53,
+                    69,
+                    80,
+                    443,
+                    2052,
+                    2053,
+                    2082,
+                    2083,
+                    2086,
+                    2087,
+                    2096,
+                    8080,
+                    8443
+                ],
+                "hostnames": [
+                    "xln.mkmg.com",
+                    "scg.com",
+                    "one.one.one.one",
+                    "wlcry.scg.com"
+                ],
+                "software": [
+                    "cpe:/a:cloudflare:cloudflare"
+                ],
+                "tags": [],
+                "vulns": []
+            },
+            "findings": [
+                {
+                    "severity": "medium",
+                    "title": "TFTP exposed to the internet (port 69)",
+                    "detail": "This service should normally sit behind a VPN or firewall.",
+                    "module": "exposure"
+                }
+            ],
+            "links": {
+                "Shodan": "https://www.shodan.io/host/1.1.1.1"
+            },
+            "duration_ms": 49,
+            "cached": true
+        },
+        {
+            "id": "abuseipdb",
+            "title": "Abuse reports (AbuseIPDB)",
+            "status": "skipped",
+            "summary": "needs an API key (ABUSEIPDB_API_KEY in .env)",
+            "data": {},
+            "findings": [],
+            "links": {},
+            "duration_ms": 0,
+            "cached": false
+        },
+        {
+            "id": "virustotal",
+            "title": "Reputation (VirusTotal)",
+            "status": "skipped",
+            "summary": "needs an API key (VIRUSTOTAL_API_KEY in .env)",
+            "data": {},
+            "findings": [],
+            "links": {},
+            "duration_ms": 0,
+            "cached": false
+        }
+    ]
+}
