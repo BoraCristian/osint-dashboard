@@ -62,7 +62,7 @@ async def hosting(target: Target, ctx: Context) -> Result:
         raise NoData("no A records")
     infos = await asyncio.gather(*(_ipinfo(ctx, ip) for ip in ips))
     hosts = [{"ip": ip, **{k: v for k, v in _geo(i).items() if k in ("organisation", "asn", "city", "country")}}
-             for ip, i in zip(ips, infos)]
+             for ip, i in zip(ips, infos, strict=True)]
     orgs = sorted({h["organisation"] for h in hosts if h["organisation"]})
     return Result(f"Hosted by {', '.join(orgs) or 'unknown'}", {"addresses": hosts}, [])
 

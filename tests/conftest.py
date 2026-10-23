@@ -6,7 +6,7 @@ import asyncio
 import json
 import sys
 from pathlib import Path
-from typing import Callable
+from collections.abc import Callable
 
 import dns.resolver
 import httpx

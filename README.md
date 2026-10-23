@@ -85,7 +85,7 @@ An OSINT tool takes arbitrary input and makes outbound requests, so it's a natur
 - **SSRF guard** ([`app/netguard.py`](app/netguard.py)). The two modules that connect to the target (TLS and HTTP headers) resolve the hostname first. They refuse to connect if *any* address is loopback, private, link-local (e.g. the cloud metadata service `169.254.169.254`), CGNAT, multicast or reserved. Redirects are followed manually so **every hop** is checked again, and the TLS check connects to the vetted IP itself. Private IPs typed directly are rejected up front.
 - **Untrusted data stays text.** DNS TXT records, HTTP headers and profile bios can contain HTML. The frontend only inserts data with `textContent` (no `innerHTML`), and a strict **Content-Security-Policy** (`script-src 'self'`, no inline code) acts as a second layer.
 - **Rate limiting** per client (default 20 lookups/minute) and input length/format validation.
-- The app sends its own security headers (CSP, `X-Frame-Options: DENY`, `nosniff`, `Referrer-Policy: no-referrer`), so it gets the A grade it checks other sites for.
+- The app sends its own security headers (CSP, `X-Frame-Options: DENY`, `nosniff`, `Referrer-Policy: no-referrer`), the same ones its header check looks for on other sites. (Add HTTPS through a reverse proxy when deploying it.)
 - The Docker image runs as an unprivileged user, and API keys come from the environment and are never sent to the browser.
 
 **Known limitation:** a DNS-rebinding attacker could change a hostname's answer between the check and the HTTP request in the headers module. The TLS module isn't affected because it connects to the checked IP. Fixing it fully would mean pinning the resolved IP in the HTTP transport.

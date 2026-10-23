@@ -32,7 +32,7 @@ class Settings:
     user_agent: str = "osint-dashboard/0.1 (+https://github.com/BoraCristian/cybersec-portfolio)"
 
     @classmethod
-    def from_env(cls) -> "Settings":
+    def from_env(cls) -> Settings:
         load_dotenv()
 
         def key(name: str) -> str | None:

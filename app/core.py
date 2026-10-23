@@ -5,7 +5,8 @@ from __future__ import annotations
 import asyncio
 import time
 from dataclasses import asdict, dataclass, field, replace
-from typing import Any, AsyncIterator, Awaitable, Callable
+from typing import Any
+from collections.abc import AsyncIterator, Awaitable, Callable
 
 import dns.asyncresolver
 import httpx

@@ -5,7 +5,7 @@ from __future__ import annotations
 import asyncio
 import hashlib
 from dataclasses import dataclass
-from typing import Callable
+from collections.abc import Callable
 from urllib.parse import quote
 
 import dns.resolver
@@ -67,7 +67,7 @@ SITES = [
          by_json(lambda d: d is not None), pick("karma", "created")),
     Site("Keybase", "https://keybase.io/_/api/1.0/user/lookup.json?usernames={u}", "https://keybase.io/{u}",
          by_json(lambda d: bool(d.get("them")) and d["them"][0] is not None),
-         lambda d: pick("full_name", "location", "bio")((d["them"][0].get("profile") or {}))),
+         lambda d: pick("full_name", "location", "bio")(d["them"][0].get("profile") or {})),
     Site("Mastodon (mastodon.social)", "https://mastodon.social/api/v1/accounts/lookup?acct={u}",
          "https://mastodon.social/@{u}", by_status, pick("display_name", "created_at", "followers_count")),
     Site("Chess.com", "https://api.chess.com/pub/player/{u_lower}", "https://www.chess.com/member/{u}", by_status,

@@ -29,7 +29,7 @@ async def dns_records(target: Target, ctx: Context) -> Result:
         answers = await asyncio.gather(*(dns_query(ctx.resolver, target.domain, t) for t in RECORD_TYPES))
     except dns.resolver.NXDOMAIN:
         raise NoData(f"{target.domain} does not exist (NXDOMAIN)") from None
-    records = {t: a for t, a in zip(RECORD_TYPES, answers) if a}
+    records = {t: a for t, a in zip(RECORD_TYPES, answers, strict=True) if a}
     if not records:
         raise NoData("the domain exists but has no records")
 
