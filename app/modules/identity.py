@@ -26,7 +26,7 @@ class Site:
     api: str  # URL checked, {u} = username
     profile: str  # public profile URL shown to the user
     exists: Callable[[httpx.Response], bool | None]  # True / False / None = could not tell
-    details: Callable[[dict], dict] = lambda d: {}
+    details: Callable[[dict], dict] = lambda _: {}
 
 
 def by_status(r: httpx.Response) -> bool | None:
