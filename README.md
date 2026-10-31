@@ -1,5 +1,7 @@
 # OSINT Dashboard
 
+[![CI](https://github.com/BoraCristian/osint-dashboard/actions/workflows/ci.yml/badge.svg)](https://github.com/BoraCristian/osint-dashboard/actions/workflows/ci.yml)
+
 A web dashboard for **passive reconnaissance**. You type a domain, IP address, email address or username, and it queries a dozen public sources in parallel. Results stream into the page as each source answers, and the security-relevant findings (spoofable email domain, exposed RDP, newly registered domain, missing HSTS...) are collected into one list ranked by severity.
 
 ![Dashboard showing the results for python.org](docs/screenshot.jpg)
@@ -34,7 +36,8 @@ It's built with **FastAPI**, **httpx** (async) and **dnspython**, with a depende
 ## Run it
 
 ```bash
-cd projects/OSINT-dashboard
+git clone https://github.com/BoraCristian/osint-dashboard.git
+cd osint-dashboard
 python -m venv .venv
 .venv\Scripts\activate            # Windows   (Linux/macOS: source .venv/bin/activate)
 pip install -r requirements.txt
@@ -102,3 +105,9 @@ The 81 tests run **fully offline**: DNS goes through a fake resolver, and HTTP g
 ## Ethics
 
 Everything here is passive, public-source intelligence, the same data anyone can query by hand. The only direct contact with the target is one ordinary TLS handshake and one or two HTTP GETs to its home page. Use it on assets you own or are authorised to assess. Treat username matches as leads, not proof: different people can share a username.
+
+## More security projects
+
+- [Ovidius NIDS](https://github.com/BoraCristian/ovidius-nids), my bachelor's thesis: hybrid signature + machine-learning network intrusion detection
+- [Log Analyzer](https://github.com/BoraCristian/log-analyzer): attack detection in auth and web server logs
+- [SafeNotes](https://github.com/BoraCristian/safenotes): a web app that defends against the OWASP Top 10

@@ -29,7 +29,7 @@ class Settings:
     module_timeout: float = 25.0
     cache_ttl: int = 600  # seconds
     rate_limit: int = 20  # lookups per client per minute
-    user_agent: str = "osint-dashboard/0.1 (+https://github.com/BoraCristian/cybersec-portfolio)"
+    user_agent: str = "osint-dashboard/0.1 (+https://github.com/BoraCristian/osint-dashboard)"
 
     @classmethod
     def from_env(cls) -> Settings:
