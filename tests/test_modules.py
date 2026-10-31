@@ -311,7 +311,13 @@ def test_email_domain_provider_detection():
     records = {("corp.example", "MX"): ["20 backup.example.net", "10 corp-example.mail.protection.outlook.com"]}
     report = module_run("email_domain", "ceo@corp.example", make_ctx(records=records))
     assert report.data["mail_provider"] == "Microsoft 365"
-    assert report.data["mx"][0].endswith("outlook.com")  # sorted by priority
+    assert report.data["mx"] == ["corp-example.mail.protection.outlook.com", "backup.example.net"]  # by priority
+
+
+def test_email_provider_ignores_lookalike_domains():
+    records = {("phish.example", "MX"): ["10 mx.evil-outlook.com", "20 outlook.com.attacker.example"]}
+    report = module_run("email_domain", "x@phish.example", make_ctx(records=records))
+    assert report.data["mail_provider"] is None
 
 
 def test_gravatar_profile():

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 import time
 from dataclasses import asdict, dataclass, field, replace
 from typing import Any
@@ -15,6 +16,7 @@ from .config import Settings
 from .targets import Target
 
 SEVERITIES = ("critical", "high", "medium", "low", "info")
+log = logging.getLogger(__name__)
 
 
 @dataclass
@@ -134,8 +136,10 @@ async def run_module(mod: Module, target: Target, ctx: Context, cache: TTLCache 
         status, summary = "error", f"{exc.request.url.host} answered HTTP {exc.response.status_code}"
     except httpx.HTTPError as exc:
         status, summary = "error", f"network error: {type(exc).__name__}"
-    except Exception as exc:  # a bug in one module must not break the whole lookup
-        status, summary = "error", f"{type(exc).__name__}: {exc}"
+    except Exception:  # a bug in one module must not break the whole lookup
+        # details go to the server log only; clients never see exception text
+        log.exception("module %s failed for %s target", mod.id, target.kind)
+        status, summary = "error", "internal error in this module (details are in the server log)"
 
     for f in findings:
         f.module = mod.id

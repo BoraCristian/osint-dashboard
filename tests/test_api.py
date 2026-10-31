@@ -67,13 +67,35 @@ def test_stream_sends_start_modules_done(client):
 @pytest.mark.parametrize("params, message", [
     ({"q": "10.0.0.1"}, "private or reserved"),
     ({"q": "169.254.169.254"}, "private or reserved"),
-    ({"q": "not valid!"}, "could not tell"),
-    ({"q": "x", "type": "spaceship"}, "unknown type"),
+    ({"q": "not valid!"}, "Could not tell what that is"),
+    ({"q": "x", "type": "spaceship"}, "Unknown target type"),
+    ({"q": "nope", "type": "ip"}, "not a valid IP address"),
 ])
 def test_bad_requests(client, params, message):
     r = client.get("/api/lookup", params=params)
     assert r.status_code == 400 and message in r.json()["error"]
     assert client.get("/api/stream", params=params).status_code == 400
+
+
+def test_error_messages_never_echo_the_input(client):
+    for q, kind in [("<script>alert(1)</script>", None), ("evil<b>@@x", "email"), ("<img src=x>", "domain")]:
+        params = {"q": q, **({"type": kind} if kind else {})}
+        error = client.get("/api/lookup", params=params).json()["error"]
+        assert "<" not in error and q not in error
+
+
+def test_module_crash_details_stay_on_the_server(monkeypatch):
+    from app.core import MODULES, Module
+
+    async def broken(target, ctx):
+        raise RuntimeError("secret internal detail: /srv/app/keys.txt")
+
+    monkeypatch.setitem(MODULES, "accounts", Module("accounts", "Accounts", frozenset({"username"}), broken))
+    app = create_app(Settings(rate_limit=0), context=make_ctx(routes(HTTP_MOCKS)))
+    with TestClient(app) as c:
+        (report,) = c.get("/api/lookup", params={"q": "neo"}).json()["modules"]
+    assert report["status"] == "error"
+    assert "secret" not in report["summary"] and "RuntimeError" not in report["summary"]
 
 
 def test_rate_limit():

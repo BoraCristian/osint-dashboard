@@ -19,7 +19,7 @@ from . import modules as _modules  # noqa: F401  (registers the lookup modules)
 from .config import ROOT, Settings
 from .core import MODULES, SEVERITIES, Context, TTLCache, modules_for, run_all, sort_findings
 from .netguard import is_public
-from .targets import InvalidTarget, Target, parse_target
+from .targets import MESSAGES, InvalidTarget, Target, parse_target
 
 STATIC = ROOT / "static"
 
@@ -93,7 +93,8 @@ def create_app(settings: Settings | None = None, context: Context | None = None)
         try:
             target = parse_target(q, kind)
         except InvalidTarget as exc:
-            return error(400, str(exc))
+            # fixed text looked up by reason code: the exception object itself never reaches the client
+            return error(400, MESSAGES.get(exc.reason, MESSAGES["unrecognised"]))
         if target.kind == "ip" and not is_public(target.value):
             return error(400, f"{target.value} is a private or reserved address - there is nothing public to look up")
         if not limiter.allow(request.client.host if request.client else "unknown"):

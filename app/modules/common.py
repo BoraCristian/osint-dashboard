@@ -26,6 +26,13 @@ async def dns_query(resolver: dns.asyncresolver.Resolver, name: str, rtype: str)
     return out
 
 
+def in_domain(host: str, domain: str) -> bool:
+    """True if host is domain itself or one of its subdomains. A plain endswith() would also
+    accept look-alikes such as evil-outlook.com for outlook.com."""
+    host, domain = host.lower().rstrip("."), domain.lower().rstrip(".")
+    return host == domain or host.endswith("." + domain)
+
+
 def parse_time(value: str | None) -> datetime | None:
     if not value:
         return None

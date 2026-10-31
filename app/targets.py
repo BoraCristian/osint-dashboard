@@ -15,8 +15,23 @@ EMAIL_RE = re.compile(r"^[a-z0-9.!#$%&'*+/=?^_`{|}~-]{1,64}@(?P<domain>[^@\s]+)$
 USERNAME_RE = re.compile(r"^[a-z0-9][a-z0-9_.-]{0,38}$", re.I)
 
 
+# Error texts shown to users. They are fixed strings and never include the input or exception
+# details, so an error response can't be used to reflect content or leak internals.
+MESSAGES = {
+    "empty": "Enter a domain, IP address, email address or username.",
+    "too_long": "That input is too long (300 characters at most).",
+    "unknown_type": "Unknown target type. Use auto, domain, ip, email or username.",
+    "bad_ip": "That is not a valid IP address.",
+    "bad_email": "That is not a valid email address.",
+    "bad_domain": "That is not a valid domain name.",
+    "unrecognised": "Could not tell what that is. Pick a type explicitly.",
+}
+
+
 class InvalidTarget(ValueError):
-    pass
+    def __init__(self, reason: str):
+        super().__init__(MESSAGES[reason])
+        self.reason = reason  # a key of MESSAGES
 
 
 @dataclass(frozen=True)
@@ -49,11 +64,11 @@ def _normalise_domain(text: str) -> str | None:
 def parse_target(text: str, kind: str | None = None) -> Target:
     raw = (text or "").strip()
     if not raw:
-        raise InvalidTarget("enter a domain, IP address, email address or username")
+        raise InvalidTarget("empty")
     if len(raw) > 300:
-        raise InvalidTarget("input is too long")
+        raise InvalidTarget("too_long")
     if kind not in (None, "", "auto") and kind not in KINDS:
-        raise InvalidTarget(f"unknown type {kind!r}")
+        raise InvalidTarget("unknown_type")
     kind = None if kind in (None, "", "auto") else kind
 
     value = raw
@@ -68,24 +83,24 @@ def parse_target(text: str, kind: str | None = None) -> Target:
             return Target(raw, "ip", str(ipaddress.ip_address(value.strip("[]"))))
         except ValueError:
             if kind == "ip":
-                raise InvalidTarget(f"{raw!r} is not a valid IP address") from None
+                raise InvalidTarget("bad_ip") from None
 
     if kind in (None, "email") and "@" in value:
         m = EMAIL_RE.match(value)
         domain = _normalise_domain(m["domain"]) if m else None
         if m and domain:
             return Target(raw, "email", f"{value.rsplit('@', 1)[0]}@{domain}")
-        raise InvalidTarget(f"{raw!r} is not a valid email address")
+        raise InvalidTarget("bad_email")
     if kind == "email":
-        raise InvalidTarget(f"{raw!r} is not a valid email address")
+        raise InvalidTarget("bad_email")
 
     if kind in (None, "domain"):
         domain = _normalise_domain(value)
         if domain:
             return Target(raw, "domain", domain)
         if kind == "domain":
-            raise InvalidTarget(f"{raw!r} is not a valid domain name")
+            raise InvalidTarget("bad_domain")
 
     if USERNAME_RE.match(value):
         return Target(raw, "username", value)
-    raise InvalidTarget(f"could not tell what {raw!r} is - pick a type explicitly")
+    raise InvalidTarget("unrecognised")

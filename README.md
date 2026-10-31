@@ -97,7 +97,7 @@ pip install -r requirements-dev.txt
 pytest
 ```
 
-The 77 tests run **fully offline**: DNS goes through a fake resolver, and HTTP goes through `httpx.MockTransport` with recorded-style responses. They cover target detection (URLs, IDN domains, IPv6, `@handles`), the SSRF guard (loopback, metadata IP, IPv4-mapped IPv6, redirect to an internal host), SPF/DMARC parsing edge cases, every module's parsing and severity logic, and the API (SSE event order, 400/429 responses, security headers).
+The 81 tests run **fully offline**: DNS goes through a fake resolver, and HTTP goes through `httpx.MockTransport` with recorded-style responses. They cover target detection (URLs, IDN domains, IPv6, `@handles`), the SSRF guard (loopback, metadata IP, IPv4-mapped IPv6, redirect to an internal host), SPF/DMARC parsing edge cases, every module's parsing and severity logic, and the API (SSE event order, 400/429 responses, security headers).
 
 ## Ethics
 

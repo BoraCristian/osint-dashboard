@@ -13,7 +13,7 @@ import httpx
 
 from ..core import Context, Finding, NoData, Result, module
 from ..targets import Target
-from .common import dns_query
+from .common import dns_query, in_domain
 
 # ---------------------------------------------------------------------------
 # Username presence
@@ -139,7 +139,7 @@ async def email_domain(target: Target, ctx: Context) -> Result:
         return Result("Domain does not exist", {"domain": domain, "mx": []},
                       [Finding("high", "Email domain does not exist", "This address cannot receive mail.")])
     hosts = [m.split()[-1].lower() for m in sorted(mx, key=lambda m: int(m.split()[0]) if m.split()[0].isdigit() else 99)]
-    provider = next((name for h in hosts for suffix, name in MX_PROVIDERS.items() if h.endswith(suffix)), None)
+    provider = next((name for h in hosts for suffix, name in MX_PROVIDERS.items() if in_domain(h, suffix)), None)
     findings = []
     if not hosts:
         findings.append(Finding("medium", "Domain has no MX record", "The address probably cannot receive mail."))
